@@ -1,0 +1,23 @@
+version: '3.7'
+
+networks: 
+  traefik:
+    external:
+      name: traefik
+
+services:
+  rails-dummy_app:
+    build:
+      context: .
+      target: build_ruby_dev
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./:/var/www/html
+      - ./docker/data/zsh:~/.zsh_history
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=${PROJECT_NAME}.traefik"
+      - "traefik.frontend.rule=Host:${PROJECT_NAME}.traefik.docker"
+      - "traefik.port=3000"
